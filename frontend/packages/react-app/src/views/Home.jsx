@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import axios from "axios";
 import { Button, Card, Divider, Modal, Typography, Form, Input, message, Select} from "antd";
+import {NFTStorage, Blob} from "nft.storage";
 
 const {Option} = Select;
 const {Text} = Typography
@@ -29,6 +30,8 @@ function Home(params) {
 
   const NFTPortAPIKey = "4a448f5d-98ab-42a7-bb26-a7f40f57e501";
   const CovalentAPIKey = "ckey_b6aa47493b8648339e1913eea4a";
+  const NFTStorageAPIKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY0ODlmNjMxZjBEZEJiN2MxMDI4MzNBQ2I1OTFDMjZlNTgyOGIxRUMiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzNzQ3MjU1MjEzNywibmFtZSI6InlvZ2ktbmZ0In0.47Q_VGfsJ2k47ONMRQG533MlbK9wo8SG7xOdUxFZDg0";
+  const NFTStorageEndpoint = 'https://api.nft.storage';
 
   const validateMessages = {
     required: "${label} is required!",
@@ -79,10 +82,6 @@ function Home(params) {
       mint_to_address: nftAddress,
     }), options)
       .then(function(response) {
-        //console.log(response.json().contract_address);
-        // setDeployedContractAddress(contract_address);
-        // setTxnHash(transaction_hash);
-        // setTxnURL(transaction_external_url);
         return response.json();
         successMessage();  
       })
@@ -91,35 +90,18 @@ function Home(params) {
       })
   }
 
-  const client = axios.create({
-    auth: {
-      username: CovalentAPIKey,
-      password: ''
-    }
-  });
-
-  async function covalentTest() {
-     try {
-       const result = await client.get('https://api.covalenthq.com/v1/137/')
-     } catch(error) {
-      if (error.response) {
-        console.log('api response error', error.response);
-        if (error.response.data) {
-          return error.response.data.error_message;
-        }
-        return error.response;
-      } else if (error.request) {
-        console.log('api request error', error.request);
-        return error.request;
-      } else {
-        console.log('unexpected api error', error.message);
-        return error.message;
-      }
-     }
-  }
-
   const handleFileSelect = (event) => {
     setSelectedFile(event.target.files[0]);
+  }
+
+  
+  async function uploadFileToIPFS() {
+    const storage = new NFTStorage({NFTStorageEndpoint, NFTPortAPIKey});
+    const data = selectedFile;
+    const cid = await storage.storeBlob(new Blob([data]));
+    console.log({cid});
+    const status = await storage.status(cid);
+    console.log(status);
   }
 
   return (
@@ -149,7 +131,7 @@ function Home(params) {
             <div style={{ marginTop: 20 }}>
               <input type = "file" onChange={handleFileSelect}/>
               <br/><br/>
-              <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+              <Button type="primary" htmlType="submit" onClick={uploadFileToIPFS}>
                 Upload
               </Button>
               <br/>

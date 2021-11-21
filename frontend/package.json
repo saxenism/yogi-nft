@@ -67,7 +67,8 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.24.0"
+    "axios": "^0.24.0",
+    "nft.storage": "^4.0.1"
   },
   "devDependencies": {
     "husky": "^7.0.2"
