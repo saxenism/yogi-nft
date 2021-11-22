@@ -4,6 +4,7 @@ import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
+import { DummyDataContextProvider } from "./context/dummy";
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
@@ -19,10 +20,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const app = (
+  <DummyDataContextProvider>
+    <App subgraphUri={subgraphUri} />
+  </DummyDataContextProvider>
+);
+
 ReactDOM.render(
   <ApolloProvider client={client}>
     <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <App subgraphUri={subgraphUri} />
+      {app}
     </ThemeSwitcherProvider>
   </ApolloProvider>,
   document.getElementById("root"),
