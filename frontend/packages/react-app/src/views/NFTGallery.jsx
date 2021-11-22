@@ -17,10 +17,13 @@ export default function NFTGallery() {
         }
       });
     
-      async function covalentTest() {
-         try {
-           const result = await client.get('https://api.covalenthq.com/v1/137/');
-         } catch(error) {
+      const getAddressBalance = async (address, withNft) => {
+        // console.log('getAddressBalance',address);
+        try {
+          const result = await client.get(`https://api.covalenthq.com/v1/1/address/${address}/balances_v2/?nft=${withNft ? 'true' : 'false'}`)
+          // console.log(result.data.data);
+          return result;
+        } catch (error) {
           if (error.response) {
             console.log('api response error', error.response);
             if (error.response.data) {
@@ -34,12 +37,13 @@ export default function NFTGallery() {
             console.log('unexpected api error', error.message);
             return error.message;
           }
-         }
+        }
       }
 
   return (
     <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 16 }}>
     <h1>NFT Gallery </h1> 
+    <Button onClick={getAddressBalance} type="primary" size="large" style={{marginBottom: 20}} >Get Assets</Button>
         <div style={{padding: "30px"}}>
             <Row gutter={16}>
                 {
