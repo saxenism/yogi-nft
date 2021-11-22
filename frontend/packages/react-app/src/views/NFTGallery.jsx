@@ -7,6 +7,8 @@ const {Meta} = Card;
 const {Paragraph} = Typography;
 
 export default function NFTGallery() {
+  const [withNft, setWithNft] = useState(true);
+  const [address, setAddress] = useState("0xabD0127D996A468A79a0a8e88F4D419E40402e95");
   const {approvedNftData} = useContext(DummyDataContext);
   const CovalentAPIKey = "ckey_b6aa47493b8648339e1913eea4a";
 
