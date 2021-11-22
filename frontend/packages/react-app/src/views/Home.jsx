@@ -28,9 +28,6 @@ function Home(params) {
   const [nftEvent, setNftEvent] = useState('');
   const [nftTotalProofs, setNftTotalProofs] = useState(0);
   const [nftStreak, setNftStreak] = useState(0);
-  const [ipfsHash, setIpfsHash] = useState('');
-  const [pinSize, setPinSize] = useState('');
-  const [timeStamp, setTimeStamp] = useState('');
 
   const {proofIpfsDetails, setProofIpfsDetails} = useContext(DummyDataContext);
 
@@ -149,32 +146,28 @@ function Home(params) {
       });
 
       if(result) {
-        console.log(result);
-        setIpfsHash(result.data.IpfsHash);
-        setPinSize(result.data.PinSize);
-        setTimeStamp(result.data.Timestamp);
+        setProofIpfsDetails([...proofIpfsDetails, {
+          nftName: nftName,
+          nftDescription: nftDescription,
+          ipfsHash: result.data.IpfsHash,
+          timeStamp: result.data.Timestamp,
+          nftStreak: nftStreak,
+          nftTotalProofs: nftTotalProofs,
+          pinSize: result.data.PinSize,
+        }]);
+        alert("Uploaded to IPFS successfully");
       } else {
         console.log("Something went wrong. Try again");
       }
     } catch(error) {
       console.log(error);
-    } finally {
-      setProofIpfsDetails([...proofIpfsDetails, {
-        nftName: nftName,
-        nftDescription: nftDescription,
-        ipfsHash: ipfsHash,
-        timeStamp: timeStamp,
-        nftStreak: nftStreak,
-        nftTotalProofs: nftTotalProofs,
-        pinSize: pinSize,
-      }]);
     }
   }
 
   return (
     <div style={{width: "50%", margin: "auto", marginTop: 64 }}>
       <h1> 🧘 Welcome to <i>Yogi NFT</i> 🧘</h1>
-      <Button onClick={testPinataAuthentication} type="primary" size="large" style={{marginBottom: 20}} >Test Pinata</Button>
+        {/*<Button onClick={testPinataAuthentication} type="primary" size="large" style={{marginBottom: 20}} >Test Pinata</Button>*/}
         <Card style={{ marginTop: 32 }}>
           <div>
             <div style={{ marginTop: 20 }}>
@@ -188,7 +181,7 @@ function Home(params) {
             </div>
             <Divider />
             <div style={{ marginTop: 20 }}>
-              <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setModalVisible(true)}>NFT Details</Button>
+              <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setModalVisible(true)}>IPFS Metadata Details</Button>
               <br/>
               <Text>
                   Once you are done with creating an event, now is the time to furbish proof of accomplishing the task in that event.
@@ -205,8 +198,8 @@ function Home(params) {
               <br/>
               <Text>
                 Use the <i>Choose File</i> button to select the file you want to upload as proof of accomplishing the task in your event. Please be honest here,
-                because otherwise, you'll utimately be decieving yourself. Then click on the <i>Upload to IPFS</i> button to mint your proof-of-accomplishment NFT onto 
-                the Polygon chain
+                because otherwise, you'll utimately be decieving yourself. Then click on the <i>Upload to IPFS</i> button to upload your proof, which will be minted
+                as your proof-of-accomplishment NFT onto the Polygon chain
               </Text>
             </div>
           </div>

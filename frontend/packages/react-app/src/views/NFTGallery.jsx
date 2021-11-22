@@ -1,13 +1,14 @@
-import { utils } from "ethers";
-import { Select } from "antd";
-import React, { useState } from "react";
-import { Address, AddressInput } from "../components";
+import React, {useState, useContext} from "react";
+import {Button, Card, Col, Row, Typography, Modal, Input, Form, InputNumber} from 'antd';
+import { DummyDataContext } from "../context/dummy";
 import axios from "axios";
-
-const { Option } = Select;
+ 
+const {Meta} = Card;
+const {Paragraph} = Typography;
 
 export default function NFTGallery() {
-    const CovalentAPIKey = "ckey_b6aa47493b8648339e1913eea4a";
+  const {approvedNftData} = useContext(DummyDataContext);
+  const CovalentAPIKey = "ckey_b6aa47493b8648339e1913eea4a";
 
     const client = axios.create({
         auth: {
@@ -37,8 +38,32 @@ export default function NFTGallery() {
       }
 
   return (
-    <div style={{width: "80%", margin: "auto", marginTop: 64 }}>
-        <h1> 🎨 Your NFT Gallery 🎨</h1>
-    </div>
+    <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 16 }}>
+    <h1>NFT Gallery </h1> 
+        <div style={{padding: "30px"}}>
+            <Row gutter={16}>
+                {
+                    approvedNftData.map(nftInfo =>  
+                        <Col span={8}>
+                            <Card title={<Paragraph copyable>{nftInfo.nftName}</Paragraph>}
+                                hoverable={true} 
+                                bordered={true} 
+                                cover={<img alt={nftInfo.nftName} src={nftInfo.img}/>}
+                                size = "large"
+                            >
+                            <Meta title ="NFT Address: " description = {(nftInfo.nftAddress)}/>
+                            <br />
+                            <Meta title ="NFT Token ID: " description = {nftInfo.tokenID}/>
+                            <br />
+                            <Meta title ="Desired Collateral Asset: " description = {(nftInfo.collateralAsset)}/>
+                            <br />
+                            <Meta title ="Description: " description = {(nftInfo.description)}/>
+                            </Card>        
+                        </Col>
+                    )
+                }
+            </Row>
+        </div>
+</div>
   );
 }
